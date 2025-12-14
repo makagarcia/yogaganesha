@@ -1,0 +1,48 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Sobre Nosotros - {{ settings.business_name }}{% endblock %}
+
+{% block content %}
+
+<!-- Page Header Start -->
+<div class="page-header">
+    <div class="container">
+        <div class="row">
+            <div class="col-12">
+                <h2>Sobre Nosotros</h2>
+            </div>
+        </div>
+    </div>
+</div>
+<!-- Page Header End -->
+
+<!-- About Start -->
+<div class="about">
+    <div class="container">
+        <div class="row align-items-center">
+            <div class="col-lg-5 col-md-6">
+                <div class="about-img">
+                    <img src="{% static 'img/about.png' %}" alt="Sobre Nosotros">
+                </div>
+            </div>
+            <div class="col-lg-7 col-md-6">
+                <div class="section-header text-left">
+                    <p>Conócenos</p>
+                    <h2>{{ settings.about_title }}</h2>
+                </div>
+                <div class="about-text">
+                    <p>{{ settings.about_text }}</p>
+                    <p>En {{ settings.business_name }}, creemos que el yoga es más que ejercicio físico. Es un camino
+                        hacia el bienestar integral, la paz interior y el autoconocimiento.</p>
+                    <p>Nuestro equipo de instructores certificados está comprometido con tu crecimiento personal y tu
+                        salud. Ofrecemos clases para todos los niveles, desde principiantes hasta practicantes
+                        avanzados.</p>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<!-- About End -->
+
+{% endblock %}

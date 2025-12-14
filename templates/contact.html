@@ -1,0 +1,94 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Contacto - {{ settings.business_name }}{% endblock %}
+
+{% block content %}
+
+<!-- Page Header Start -->
+<div class="page-header">
+    <div class="container">
+        <div class="row">
+            <div class="col-12">
+                <h2>Contacto</h2>
+            </div>
+        </div>
+    </div>
+</div>
+<!-- Page Header End -->
+
+<!-- Contact Start -->
+<div class="contact wow fadeInUp">
+    <div class="container">
+        <div class="section-header text-center">
+            <p>Ponte en Contacto</p>
+            <h2>Contáctanos Para Cualquier Consulta</h2>
+        </div>
+        <div class="row">
+            <div class="col-md-6">
+                <div class="contact-info">
+                    <div class="contact-item">
+                        <i class="flaticon-address"></i>
+                        <div class="contact-text">
+                            <h2>Dirección</h2>
+                            <p>{{ settings.address }}</p>
+                        </div>
+                    </div>
+                    <div class="contact-item">
+                        <i class="flaticon-call"></i>
+                        <div class="contact-text">
+                            <h2>Teléfono</h2>
+                            <p>{{ settings.phone }}</p>
+                        </div>
+                    </div>
+                    <div class="contact-item">
+                        <i class="flaticon-send-mail"></i>
+                        <div class="contact-text">
+                            <h2>Email</h2>
+                            <p>{{ settings.email }}</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-6">
+                {% if messages %}
+                {% for message in messages %}
+                <div class="alert alert-{{ message.tags }} alert-dismissible fade show" role="alert">
+                    {{ message }}
+                    <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                {% endfor %}
+                {% endif %}
+
+                <div class="contact-form">
+                    <form method="post">
+                        {% csrf_token %}
+                        <div class="form-row">
+                            <div class="form-group col-md-6">
+                                <input type="text" class="form-control" name="name" placeholder="Tu Nombre" required />
+                            </div>
+                            <div class="form-group col-md-6">
+                                <input type="email" class="form-control" name="email" placeholder="Tu Email" required />
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <input type="text" class="form-control" name="subject" placeholder="Asunto" required />
+                        </div>
+                        <div class="form-group">
+                            <textarea class="form-control" name="message" rows="5" placeholder="Mensaje"
+                                required></textarea>
+                        </div>
+                        <div>
+                            <button class="btn" type="submit">Enviar Mensaje</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<!-- Contact End -->
+
+{% endblock %}

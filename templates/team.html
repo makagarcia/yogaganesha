@@ -1,0 +1,69 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Nuestro Equipo - {{ settings.business_name }}{% endblock %}
+
+{% block content %}
+
+<!-- Page Header Start -->
+<div class="page-header">
+    <div class="container">
+        <div class="row">
+            <div class="col-12">
+                <h2>Nuestro Equipo</h2>
+            </div>
+        </div>
+    </div>
+</div>
+<!-- Page Header End -->
+
+<!-- Team Start -->
+<div class="team">
+    <div class="container">
+        <div class="section-header text-center">
+            <p>Instructores de Yoga</p>
+            <h2>Conoce a Nuestros Instructores Expertos</h2>
+        </div>
+        <div class="row">
+            {% for instructor in instructors %}
+            <div class="col-lg-3 col-md-6 wow fadeInUp" data-wow-delay="0.{{ forloop.counter }}s">
+                <div class="team-item">
+                    <div class="team-img">
+                        {% if instructor.photo %}
+                        <img src="{{ instructor.photo.url }}" alt="{{ instructor.name }}">
+                        {% else %}
+                        <img src="{% static 'img/team-' %}{{ forloop.counter }}.jpg" alt="{{ instructor.name }}">
+                        {% endif %}
+                        <div class="team-social">
+                            {% if instructor.twitter %}<a href="{{ instructor.twitter }}" target="_blank"><i
+                                    class="fab fa-twitter"></i></a>{% endif %}
+                            {% if instructor.facebook %}<a href="{{ instructor.facebook }}" target="_blank"><i
+                                    class="fab fa-facebook-f"></i></a>{% endif %}
+                            {% if instructor.linkedin %}<a href="{{ instructor.linkedin }}" target="_blank"><i
+                                    class="fab fa-linkedin-in"></i></a>{% endif %}
+                            {% if instructor.instagram %}<a href="{{ instructor.instagram }}" target="_blank"><i
+                                    class="fab fa-instagram"></i></a>{% endif %}
+                        </div>
+                    </div>
+                    <div class="team-text">
+                        <h2>{{ instructor.name }}</h2>
+                        <p>{{ instructor.specialization|default:"Instructor de Yoga" }}</p>
+                    </div>
+                </div>
+                {% if instructor.bio %}
+                <div class="team-bio mt-3">
+                    <p>{{ instructor.bio }}</p>
+                </div>
+                {% endif %}
+            </div>
+            {% empty %}
+            <div class="col-12 text-center">
+                <p>Próximamente nuestro equipo de instructores.</p>
+            </div>
+            {% endfor %}
+        </div>
+    </div>
+</div>
+<!-- Team End -->
+
+{% endblock %}

@@ -1,0 +1,86 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}{{ post.title }} - {{ settings.business_name }}{% endblock %}
+
+{% block content %}
+
+<!-- Page Header Start -->
+<div class="page-header">
+    <div class="container">
+        <div class="row">
+            <div class="col-12">
+                <h2>{{ post.title }}</h2>
+            </div>
+        </div>
+    </div>
+</div>
+<!-- Page Header End -->
+
+<!-- Single Post Start -->
+<div class="single">
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-8">
+                <div class="single-content wow fadeInUp">
+                    {% if post.featured_image %}
+                    <img src="{{ post.featured_image.url }}" alt="{{ post.title }}">
+                    {% else %}
+                    <img src="{% static 'img/single.jpg' %}" alt="{{ post.title }}">
+                    {% endif %}
+                    <h2>{{ post.title }}</h2>
+                    <div class="blog-meta">
+                        <p><i class="far fa-user"></i>{{ post.author.get_full_name|default:post.author.username }}</p>
+                        <p><i class="far fa-list-alt"></i>{{ post.category }}</p>
+                        <p><i class="far fa-calendar-alt"></i>{{ post.published_date|date:"d M Y" }}</p>
+                    </div>
+                    <div class="single-text">
+                        {{ post.content|linebreaks }}
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-lg-4">
+                <div class="sidebar">
+                    <div class="sidebar-widget wow fadeInUp">
+                        <h2 class="widget-title">Categorías</h2>
+                        <div class="category-widget">
+                            <ul>
+                                <li><a href="{% url 'blog' %}">Todas las Categorías</a></li>
+                            </ul>
+                        </div>
+                    </div>
+
+                    <div class="sidebar-widget wow fadeInUp">
+                        <h2 class="widget-title">Posts Recientes</h2>
+                        <div class="recent-post-widget">
+                            {% for recent_post in posts %}
+                            {% if recent_post.slug != post.slug %}
+                            <div class="post-item">
+                                <div class="post-img">
+                                    {% if recent_post.featured_image %}
+                                    <img src="{{ recent_post.featured_image.url }}" alt="{{ recent_post.title }}">
+                                    {% else %}
+                                    <img src="{% static 'img/post-' %}{{ forloop.counter }}.jpg"
+                                        alt="{{ recent_post.title }}">
+                                    {% endif %}
+                                </div>
+                                <div class="post-text">
+                                    <a href="{% url 'blog_detail' recent_post.slug %}">{{ recent_post.title }}</a>
+                                    <div class="post-meta">
+                                        <p>{{ recent_post.published_date|date:"d M Y" }}</p>
+                                    </div>
+                                </div>
+                            </div>
+                            {% endif %}
+                            {% endfor %}
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<!-- Single Post End -->
+
+{% endblock %}

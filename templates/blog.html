@@ -1,0 +1,60 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Blog - {{ settings.business_name }}{% endblock %}
+
+{% block content %}
+
+<!-- Page Header Start -->
+<div class="page-header">
+    <div class="container">
+        <div class="row">
+            <div class="col-12">
+                <h2>Blog</h2>
+            </div>
+        </div>
+    </div>
+</div>
+<!-- Page Header End -->
+
+<!-- Blog Start -->
+<div class="blog">
+    <div class="container">
+        <div class="section-header text-center">
+            <p>Desde el Blog</p>
+            <h2>Artículos sobre Yoga y Bienestar</h2>
+        </div>
+        <div class="row">
+            {% for post in posts %}
+            <div class="col-lg-4 col-md-6 wow fadeInUp" data-wow-delay="0.{{ forloop.counter }}s">
+                <div class="blog-item">
+                    <div class="blog-img">
+                        {% if post.featured_image %}
+                        <img src="{{ post.featured_image.url }}" alt="{{ post.title }}">
+                        {% else %}
+                        <img src="{% static 'img/blog-' %}{{ forloop.counter }}.jpg" alt="{{ post.title }}">
+                        {% endif %}
+                    </div>
+                    <div class="blog-text">
+                        <h2>{{ post.title }}</h2>
+                        <div class="blog-meta">
+                            <p><i class="far fa-list-alt"></i>{{ post.category }}</p>
+                            <p><i class="far fa-calendar-alt"></i>{{ post.published_date|date:"d M Y" }}</p>
+                        </div>
+                        <p>{{ post.excerpt }}</p>
+                        <a class="btn" href="{% url 'blog_detail' post.slug %}">Leer Más <i
+                                class="fa fa-angle-right"></i></a>
+                    </div>
+                </div>
+            </div>
+            {% empty %}
+            <div class="col-12 text-center">
+                <p>Próximamente nuevos artículos sobre yoga y bienestar.</p>
+            </div>
+            {% endfor %}
+        </div>
+    </div>
+</div>
+<!-- Blog End -->
+
+{% endblock %}

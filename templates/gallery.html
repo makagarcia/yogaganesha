@@ -1,0 +1,129 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Galería - {{ settings.business_name }}{% endblock %}
+
+{% block extra_css %}
+<style>
+    .video-link {
+        position: relative;
+        display: block;
+        overflow: hidden;
+        border-radius: 8px;
+        box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        transition: transform 0.3s ease;
+    }
+
+    .video-link:hover {
+        transform: scale(1.05);
+    }
+
+    .video-thumbnail {
+        width: 100%;
+        height: auto;
+        display: block;
+    }
+
+    .video-play-overlay {
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+        width: 80px;
+        height: 80px;
+        background: rgba(255, 0, 0, 0.9);
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        transition: background 0.3s ease;
+    }
+
+    .video-link:hover .video-play-overlay {
+        background: rgba(255, 0, 0, 1);
+    }
+
+    .video-play-overlay::after {
+        content: '';
+        width: 0;
+        height: 0;
+        border-left: 25px solid white;
+        border-top: 15px solid transparent;
+        border-bottom: 15px solid transparent;
+        margin-left: 5px;
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+
+<!-- Page Header Start -->
+<div class="page-header">
+    <div class="container">
+        <div class="row">
+            <div class="col-12">
+                <h2>Galería</h2>
+            </div>
+        </div>
+    </div>
+</div>
+<!-- Page Header End -->
+
+<!-- Gallery Start -->
+<div class="portfolio">
+    <div class="container">
+        <div class="section-header text-center">
+            <p>Nuestra Galería</p>
+            <h2>Imágenes y Videos</h2>
+        </div>
+        <div class="row">
+            {% for item in gallery_items %}
+            <div class="col-lg-4 col-md-6 col-sm-12 mb-4">
+                {% if item.media_type == 'image' and item.image %}
+                <!-- Imagen -->
+                <div class="card">
+                    <a href="{{ item.image.url }}" data-lightbox="gallery">
+                        <img src="{{ item.image.url }}" class="card-img-top" alt="{{ item.title }}">
+                    </a>
+                    <div class="card-body">
+                        <h5 class="card-title">{{ item.title }}</h5>
+                        {% if item.description %}
+                        <p class="card-text">{{ item.description|truncatewords:15 }}</p>
+                        {% endif %}
+                    </div>
+                </div>
+
+                {% elif item.media_type == 'video' and item.youtube_url %}
+                <!-- Video de YouTube - Enlace Directo -->
+                <div class="card">
+                    <a href="{{ item.youtube_url }}" target="_blank" class="video-link">
+                        <img src="{{ item.get_youtube_thumbnail }}" class="video-thumbnail" alt="{{ item.title }}">
+                        <div class="video-play-overlay"></div>
+                    </a>
+                    <div class="card-body">
+                        <h5 class="card-title">
+                            <a href="{{ item.youtube_url }}" target="_blank" class="text-dark">
+                                {{ item.title }}
+                            </a>
+                        </h5>
+                        {% if item.description %}
+                        <p class="card-text">{{ item.description|truncatewords:15 }}</p>
+                        {% endif %}
+                        <a href="{{ item.youtube_url }}" target="_blank" class="btn btn-sm btn-danger">
+                            <i class="fab fa-youtube"></i> Ver en YouTube
+                        </a>
+                    </div>
+                </div>
+                {% endif %}
+            </div>
+            {% empty %}
+            <div class="col-12 text-center">
+                <p>No hay elementos en la galería en este momento.</p>
+            </div>
+            {% endfor %}
+        </div>
+    </div>
+</div>
+<!-- Gallery End -->
+
+{% endblock %}

@@ -1,0 +1,238 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}{{ settings.business_name }} - Inicio{% endblock %}
+
+{% block content %}
+
+<!-- Hero Start -->
+<div class="hero">
+    <div class="container-fluid">
+        <div class="row align-items-center">
+            <div class="col-sm-12 col-md-6">
+                <div class="hero-text">
+                    <h1>{{ settings.hero_title }}</h1>
+                    <p>{{ settings.hero_subtitle }}</p>
+                    <div class="hero-btn">
+                        <a class="btn" href="{% url 'contact' %}">Únete Ahora</a>
+                        <a class="btn" href="{% url 'contact' %}">Contáctanos</a>
+                    </div>
+                </div>
+            </div>
+            <div class="col-sm-12 col-md-6">
+                <div class="hero-image">
+                    <img src="{% static 'img/hero.png' %}" alt="Hero Image">
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<!-- Hero End -->
+
+<!-- About Start -->
+<div class="about wow fadeInUp" data-wow-delay="0.1s">
+    <div class="container">
+        <div class="row align-items-center">
+            <div class="col-lg-5 col-md-6">
+                <div class="about-img">
+                    <img src="{% static 'img/about.png' %}" alt="Image">
+                </div>
+            </div>
+            <div class="col-lg-7 col-md-6">
+                <div class="section-header text-left">
+                    <p>Conócenos</p>
+                    <h2>{{ settings.about_title }}</h2>
+                </div>
+                <div class="about-text">
+                    <p>{{ settings.about_text }}</p>
+                    <a class="btn" href="{% url 'about' %}">Saber Más</a>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<!-- About End -->
+
+<!-- Class Start -->
+<div class="class">
+    <div class="container">
+        <div class="section-header text-center wow zoomIn" data-wow-delay="0.1s">
+            <p>Nuestras Clases</p>
+            <h2>Horario de Clases de Yoga</h2>
+        </div>
+        <div class="row">
+            <div class="col-12">
+                <ul id="class-filter">
+                    <li data-filter="*" class="filter-active">Todas las Clases</li>
+                    <li data-filter=".filter-pilates">Pilates Yoga</li>
+                    <li data-filter=".filter-hatha">Hatha Yoga</li>
+                    <li data-filter=".filter-vinyasa">Vinyasa Yoga</li>
+                </ul>
+            </div>
+        </div>
+        <div class="row class-container">
+            {% for class in classes %}
+            <div class="col-lg-4 col-md-6 col-sm-12 class-item filter-{{ class.category }} wow fadeInUp"
+                data-wow-delay="0.{{ forloop.counter }}s">
+                <div class="class-wrap">
+                    <div class="class-img">
+                        {% if class.image %}
+                        <img src="{{ class.image.url }}" alt="{{ class.name }}">
+                        {% else %}
+                        <img src="{% static 'img/class-' %}{{ forloop.counter }}.jpg" alt="{{ class.name }}">
+                        {% endif %}
+                    </div>
+                    <div class="class-text">
+                        {% if class.instructor %}
+                        <div class="class-teacher">
+                            {% if class.instructor.photo %}
+                            <img src="{{ class.instructor.photo.url }}" alt="{{ class.instructor.name }}">
+                            {% else %}
+                            <img src="{% static 'img/teacher-' %}{{ forloop.counter }}.png"
+                                alt="{{ class.instructor.name }}">
+                            {% endif %}
+                            <h3>{{ class.instructor.name }}</h3>
+                            <a href="{% url 'team' %}">+</a>
+                        </div>
+                        {% endif %}
+                        <h2>{{ class.name }}</h2>
+                        <div class="class-meta">
+                            <p><i class="far fa-calendar-alt"></i>{{ class.schedule_days }}</p>
+                            <p><i class="far fa-clock"></i>{{ class.schedule_time }}</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            {% empty %}
+            <div class="col-12 text-center">
+                <p>No hay clases disponibles en este momento.</p>
+            </div>
+            {% endfor %}
+        </div>
+    </div>
+</div>
+<!-- Class End -->
+
+
+
+<!-- Testimonial Start -->
+<div class="testimonial wow fadeInUp" data-wow-delay="0.1s">
+    <div class="container">
+        <div class="section-header text-center">
+            <p>Testimonios</p>
+            <h2>¡Lo que dicen nuestros clientes!</h2>
+        </div>
+        <div class="owl-carousel testimonials-carousel">
+            {% for testimonial in testimonials %}
+            <div class="testimonial-item">
+                <div class="testimonial-img">
+                    {% if testimonial.photo %}
+                    <img src="{{ testimonial.photo.url }}" alt="{{ testimonial.client_name }}">
+                    {% else %}
+                    <img src="{% static 'img/testimonial-' %}{{ forloop.counter }}.jpg"
+                        alt="{{ testimonial.client_name }}">
+                    {% endif %}
+                </div>
+                <div class="testimonial-text">
+                    <p>{{ testimonial.testimonial_text }}</p>
+                    <h3>{{ testimonial.client_name }}</h3>
+                    <h4>{{ testimonial.profession }}</h4>
+                </div>
+            </div>
+            {% empty %}
+            <div class="testimonial-item">
+                <div class="testimonial-text">
+                    <p>Próximamente testimonios de nuestros clientes.</p>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+    </div>
+</div>
+<!-- Testimonial End -->
+
+<!-- Team Start -->
+<div class="team">
+    <div class="container">
+        <div class="section-header text-center wow zoomIn" data-wow-delay="0.1s">
+            <p>Instructores de Yoga</p>
+            <h2>Instructores Expertos</h2>
+        </div>
+        <div class="row">
+            {% for instructor in instructors %}
+            <div class="col-lg-3 col-md-6 wow fadeInUp" data-wow-delay="0.{{ forloop.counter }}s">
+                <div class="team-item">
+                    <div class="team-img">
+                        {% if instructor.photo %}
+                        <img src="{{ instructor.photo.url }}" alt="{{ instructor.name }}">
+                        {% else %}
+                        <img src="{% static 'img/team-' %}{{ forloop.counter }}.jpg" alt="{{ instructor.name }}">
+                        {% endif %}
+                        <div class="team-social">
+                            {% if instructor.twitter %}<a href="{{ instructor.twitter }}" target="_blank"><i
+                                    class="fab fa-twitter"></i></a>{% endif %}
+                            {% if instructor.facebook %}<a href="{{ instructor.facebook }}" target="_blank"><i
+                                    class="fab fa-facebook-f"></i></a>{% endif %}
+                            {% if instructor.linkedin %}<a href="{{ instructor.linkedin }}" target="_blank"><i
+                                    class="fab fa-linkedin-in"></i></a>{% endif %}
+                            {% if instructor.instagram %}<a href="{{ instructor.instagram }}" target="_blank"><i
+                                    class="fab fa-instagram"></i></a>{% endif %}
+                        </div>
+                    </div>
+                    <div class="team-text">
+                        <h2>{{ instructor.name }}</h2>
+                        <p>{{ instructor.specialization|default:"Instructor de Yoga" }}</p>
+                    </div>
+                </div>
+            </div>
+            {% empty %}
+            <div class="col-12 text-center">
+                <p>Próximamente nuestro equipo de instructores.</p>
+            </div>
+            {% endfor %}
+        </div>
+    </div>
+</div>
+<!-- Team End -->
+
+<!-- Blog Start -->
+<div class="blog">
+    <div class="container">
+        <div class="section-header text-center wow zoomIn" data-wow-delay="0.1s">
+            <p>Desde el Blog</p>
+            <h2>Últimos Artículos de Yoga</h2>
+        </div>
+        <div class="owl-carousel blog-carousel wow fadeInUp" data-wow-delay="0.1s">
+            {% for post in blog_posts %}
+            <div class="blog-item">
+                <div class="blog-img">
+                    {% if post.featured_image %}
+                    <img src="{{ post.featured_image.url }}" alt="{{ post.title }}">
+                    {% else %}
+                    <img src="{% static 'img/blog-' %}{{ forloop.counter }}.jpg" alt="{{ post.title }}">
+                    {% endif %}
+                </div>
+                <div class="blog-text">
+                    <h2>{{ post.title }}</h2>
+                    <div class="blog-meta">
+                        <p><i class="far fa-list-alt"></i>{{ post.category }}</p>
+                        <p><i class="far fa-calendar-alt"></i>{{ post.published_date|date:"d M Y" }}</p>
+                    </div>
+                    <p>{{ post.excerpt }}</p>
+                    <a class="btn" href="{% url 'blog_detail' post.slug %}">Leer Más <i
+                            class="fa fa-angle-right"></i></a>
+                </div>
+            </div>
+            {% empty %}
+            <div class="blog-item">
+                <div class="blog-text">
+                    <p>Próximamente nuevos artículos sobre yoga y bienestar.</p>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+    </div>
+</div>
+<!-- Blog End -->
+
+{% endblock %}
