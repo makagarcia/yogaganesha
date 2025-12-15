@@ -2,9 +2,21 @@
 
 # Esperar a que PostgreSQL esté listo
 echo "Esperando a PostgreSQL..."
-while ! nc -z db 5432; do
-  sleep 0.1
-done
+python << END
+import socket
+import time
+import sys
+
+while True:
+    try:
+        sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+        sock.settimeout(1)
+        sock.connect(('db', 5432))
+        sock.close()
+        break
+    except:
+        time.sleep(0.1)
+END
 echo "PostgreSQL iniciado"
 
 # Ejecutar migraciones
