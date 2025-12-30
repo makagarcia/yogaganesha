@@ -1,5 +1,5 @@
 from django.shortcuts import render
-from apps.classes.models import YogaClass
+from apps.classes.models import YogaClass, ClassCategory
 from apps.instructors.models import Instructor
 from apps.blog.models import BlogPost, Testimonial, PricingPlan
 from apps.core.models import BusinessSettings, Gallery
@@ -9,9 +9,10 @@ def home(request):
     """Vista principal"""
     context = {
         'settings': BusinessSettings.load(),
-        'classes': YogaClass.objects.filter(is_active=True)[:6],
-        'instructors': Instructor.objects.filter(is_active=True)[:4],
-        'testimonials': Testimonial.objects.filter(is_active=True)[:4],
+        'categories': ClassCategory.objects.all().order_by('order'),
+        'classes': YogaClass.objects.filter(is_active=True).order_by('order')[:6],
+        'instructors': Instructor.objects.filter(is_active=True).order_by('order')[:4],
+        'testimonials': Testimonial.objects.filter(is_active=True).order_by('order')[:4],
         'blog_posts': BlogPost.objects.filter(is_published=True)[:3],
         'pricing_plans': PricingPlan.objects.filter(is_active=True).order_by('order'),
     }
@@ -30,7 +31,8 @@ def classes_list(request):
     """Vista de clases"""
     context = {
         'settings': BusinessSettings.load(),
-        'classes': YogaClass.objects.filter(is_active=True),
+        'categories': ClassCategory.objects.all().order_by('order'),
+        'classes': YogaClass.objects.filter(is_active=True).order_by('order'),
     }
     return render(request, 'class.html', context)
 

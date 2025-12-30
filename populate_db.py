@@ -10,7 +10,7 @@ django.setup()
 
 from apps.core.models import BusinessSettings
 from apps.instructors.models import Instructor
-from apps.classes.models import YogaClass
+from apps.classes.models import YogaClass, ClassCategory
 from apps.blog.models import PricingPlan, Testimonial, BlogPost
 from django.contrib.auth.models import User
 
@@ -43,126 +43,182 @@ def populate():
             'slug': 'patricia',
             'bio': 'Instructora certificada con más de 10 años de experiencia en Yoga Iyengar y Hatha.',
             'specialization': 'Yoga Iyengar',
-            'order': 1
+            'order': 1,
+            'photo': 'teacher-1.png'
         },
         {
             'name': 'Lucía',
             'slug': 'lucia',
             'bio': 'Experta en Vinyasa Flow y meditación mindfulness.',
             'specialization': 'Vinyasa Yoga',
-            'order': 2
+            'order': 2,
+            'photo': 'teacher-2.png'
         },
         {
             'name': 'Pepe',
             'slug': 'pepe',
             'bio': 'Instructor de Ashtanga Yoga con formación en India.',
             'specialization': 'Ashtanga Yoga',
-            'order': 3
+            'order': 3,
+            'photo': 'teacher-3.png'
         },
         {
             'name': 'Jorge',
             'slug': 'jorge',
             'bio': 'Especialista en Kundalini Yoga y técnicas de respiración.',
             'specialization': 'Kundalini Yoga',
-            'order': 4
+            'order': 4,
+            'photo': 'teacher-4.png'
         },
     ]
     
+    all_instructors = []
     for data in instructors_data:
         instructor, created = Instructor.objects.get_or_create(
             slug=data['slug'],
             defaults=data
         )
+        # Update photo if it was created or exists but has no photo
+        if not instructor.photo:
+            instructor.photo = data.get('photo')
+            instructor.save()
+            
+        all_instructors.append(instructor)
         if created:
             print(f"  ✅ Creado: {instructor.name}")
         else:
             print(f"  ℹ️  Ya existe: {instructor.name}")
     
-    # 3. Clases de Yoga
+    # 3. Categorías de Clases
+    print("\n🏷️ Creando categorías de clases...")
+    categories_data = [
+        {'name': 'Pilates', 'slug': 'pilates', 'order': 1},
+        {'name': 'Hatha', 'slug': 'hatha', 'order': 2},
+        {'name': 'Vinyasa', 'slug': 'vinyasa', 'order': 3},
+        {'name': 'Iyengar', 'slug': 'iyengar', 'order': 4},
+        {'name': 'Ashtanga', 'slug': 'ashtanga', 'order': 5},
+        {'name': 'Kundalini', 'slug': 'kundalini', 'order': 6},
+        {'name': 'Yin', 'slug': 'yin', 'order': 7},
+    ]
+    
+    categories = {}
+    for data in categories_data:
+        cat, created = ClassCategory.objects.get_or_create(
+            slug=data['slug'],
+            defaults=data
+        )
+        categories[data['slug']] = cat
+        if created:
+            print(f"  ✅ Creada: {cat.name}")
+        else:
+            print(f"  ℹ️  Ya existe: {cat.name}")
+
+    # 4. Clases de Yoga
     print("\n🧘 Creando clases de yoga...")
-    instructors = list(Instructor.objects.all())
+    
+    # Helpers for mapping slug to instructor object list
+    # Patricia (0), Lucia (1), Pepe (2), Jorge (3)
     
     classes_data = [
         {
             'name': 'Yoga Iyengar',
             'slug': 'yoga-iyengar',
             'description': 'Enfoque en la alineación precisa y el uso de props para perfeccionar las posturas.',
-            'category': 'iyengar',
+            'category': categories['iyengar'],
             'schedule_days': 'Lun, Mié, Vie',
             'schedule_time': '9:00 - 10:00',
-            'instructor': instructors[0] if instructors else None,
+            'instructors_to_add': [all_instructors[0]] if len(all_instructors) > 0 else [],
             'order': 1
         },
         {
             'name': 'Yoga Ashtanga Vinyasa',
             'slug': 'yoga-ashtanga-vinyasa',
             'description': 'Práctica dinámica que sincroniza respiración y movimiento en secuencias fluidas.',
-            'category': 'ashtanga',
+            'category': categories['ashtanga'],
             'schedule_days': 'Mar, Jue',
             'schedule_time': '10:00 - 11:30',
-            'instructor': instructors[2] if len(instructors) > 2 else None,
+            'instructors_to_add': [all_instructors[2]] if len(all_instructors) > 2 else [],
             'order': 2
         },
         {
             'name': 'Yoga Vinyasa',
             'slug': 'yoga-vinyasa',
             'description': 'Flujo creativo de posturas coordinadas con la respiración.',
-            'category': 'vinyasa',
+            'category': categories['vinyasa'],
             'schedule_days': 'Lun, Mié, Vie',
             'schedule_time': '18:00 - 19:00',
-            'instructor': instructors[1] if len(instructors) > 1 else None,
+            'instructors_to_add': [all_instructors[1]] if len(all_instructors) > 1 else [],
             'order': 3
         },
         {
             'name': 'Yoga Yin',
             'slug': 'yoga-yin',
             'description': 'Práctica suave y meditativa con posturas mantenidas por largos períodos.',
-            'category': 'yin',
+            'category': categories['yin'],
             'schedule_days': 'Sáb',
             'schedule_time': '10:00 - 11:30',
-            'instructor': instructors[1] if len(instructors) > 1 else None,
+            'instructors_to_add': [all_instructors[1]] if len(all_instructors) > 1 else [],
             'order': 4
         },
         {
             'name': 'Yoga Kundalini',
             'slug': 'yoga-kundalini',
             'description': 'Combinación de posturas, respiración, mantras y meditación para despertar la energía.',
-            'category': 'kundalini',
+            'category': categories['kundalini'],
             'schedule_days': 'Mar, Jue',
             'schedule_time': '19:00 - 20:30',
-            'instructor': instructors[3] if len(instructors) > 3 else None,
+            'instructors_to_add': [all_instructors[3]] if len(all_instructors) > 3 else [],
             'order': 5
         },
         {
             'name': 'Yoga Hatha',
             'slug': 'yoga-hatha',
             'description': 'Práctica tradicional que equilibra cuerpo y mente a través de asanas y pranayama.',
-            'category': 'hatha',
+            'category': categories['hatha'],
             'schedule_days': 'Lun, Mié, Vie',
             'schedule_time': '17:00 - 18:00',
-            'instructor': instructors[0] if instructors else None,
+            'instructors_to_add': [all_instructors[0]] if len(all_instructors) > 0 else [],
             'order': 6
+        },
+        # Adding Pilates for completeness based on categories
+        {
+            'name': 'Pilates Mat',
+            'slug': 'pilates-mat',
+            'description': 'Fortalecimiento del core y mejora de la postura con ejercicios de suelo.',
+            'category': categories['pilates'],
+            'schedule_days': 'Mar, Jue',
+            'schedule_time': '9:00 - 10:00',
+            'instructors_to_add': [all_instructors[0]] if len(all_instructors) > 0 else [],
+            'order': 7
         },
     ]
     
     for data in classes_data:
+        # Extract instructors list before creating object
+        instructors_list = data.pop('instructors_to_add')
+        
         yoga_class, created = YogaClass.objects.get_or_create(
             slug=data['slug'],
             defaults=data
         )
+        
+        # Always update instructors just in case
+        if instructors_list:
+            yoga_class.instructors.set(instructors_list)
+            
         if created:
             print(f"  ✅ Creada: {yoga_class.name}")
         else:
             print(f"  ℹ️  Ya existe: {yoga_class.name}")
     
-    # 4. Planes de Precios
+    # 5. Planes de Precios
     print("\n💰 Creando planes de precios...")
     pricing_data = [
         {
             'name': 'Básico',
             'price': 49.00,
             'period': 'mes',
-            'features': 'Acceso a clases grupales\n4 clases al mes\nAsesoramiento básico\nMaterial incluido',
+            'features': 'Acceso a clases grupales\\n4 clases al mes\\nAsesoramiento básico\\nMaterial incluido',
             'is_popular': False,
             'order': 1
         },
@@ -170,7 +226,7 @@ def populate():
             'name': 'Estándar',
             'price': 89.00,
             'period': 'mes',
-            'features': 'Acceso ilimitado a clases\nClases especiales\nAsesoramiento personalizado\nMaterial premium\nDescuentos en talleres',
+            'features': 'Acceso ilimitado a clases\\nClases especiales\\nAsesoramiento personalizado\\nMaterial premium\\nDescuentos en talleres',
             'is_popular': True,
             'order': 2
         },
@@ -178,7 +234,7 @@ def populate():
             'name': 'Premium',
             'price': 129.00,
             'period': 'mes',
-            'features': 'Todo lo del plan Estándar\nClases privadas (2/mes)\nPlan nutricional\nAcceso a retiros\nPrioridad en reservas',
+            'features': 'Todo lo del plan Estándar\\nClases privadas (2/mes)\\nPlan nutricional\\nAcceso a retiros\\nPrioridad en reservas',
             'is_popular': False,
             'order': 3
         },
@@ -194,7 +250,7 @@ def populate():
         else:
             print(f"  ℹ️  Ya existe: {plan.name}")
     
-    # 5. Testimonios
+    # 6. Testimonios
     print("\n💬 Creando testimonios...")
     testimonials_data = [
         {
@@ -230,7 +286,7 @@ def populate():
         else:
             print(f"  ℹ️  Ya existe: {testimonial.client_name}")
     
-    # 6. Posts del Blog
+    # 7. Posts del Blog
     print("\n📝 Creando posts del blog...")
     try:
         admin_user = User.objects.get(username='admin')
@@ -278,6 +334,7 @@ def populate():
     print("\n✨ ¡Base de datos poblada exitosamente!")
     print("\n📊 Resumen:")
     print(f"  - Instructores: {Instructor.objects.count()}")
+    print(f"  - Categorías: {ClassCategory.objects.count()}")
     print(f"  - Clases: {YogaClass.objects.count()}")
     print(f"  - Planes de Precios: {PricingPlan.objects.count()}")
     print(f"  - Testimonios: {Testimonial.objects.count()}")

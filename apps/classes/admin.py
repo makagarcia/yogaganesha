@@ -1,12 +1,26 @@
 from django.contrib import admin
-from .models import YogaClass
+from .models import YogaClass, ClassCategory
+
+
+@admin.register(ClassCategory)
+class ClassCategoryAdmin(admin.ModelAdmin):
+    list_display = ('name', 'slug', 'order')
+    search_fields = ('name',)
+    prepopulated_fields = {'slug': ('name',)}
+    list_editable = ('order',)
+    ordering = ('order', 'name')
 
 
 @admin.register(YogaClass)
 class YogaClassAdmin(admin.ModelAdmin):
-    list_display = ('name', 'category', 'instructor', 'schedule_days', 'schedule_time', 'is_active', 'order')
-    list_filter = ('category', 'is_active', 'instructor')
+    list_display = ('name', 'category', 'get_instructors', 'schedule_days', 'schedule_time', 'is_active', 'order')
+    list_filter = ('category', 'is_active', 'instructors')
     search_fields = ('name', 'description')
     prepopulated_fields = {'slug': ('name',)}
     list_editable = ('is_active', 'order')
     ordering = ('order', 'name')
+    filter_horizontal = ('instructors',)
+    
+    def get_instructors(self, obj):
+        return ", ".join([p.name for p in obj.instructors.all()])
+    get_instructors.short_description = 'Instructores'

@@ -64,15 +64,15 @@
             <div class="col-12">
                 <ul id="class-filter">
                     <li data-filter="*" class="filter-active">Todas las Clases</li>
-                    <li data-filter=".filter-pilates">Pilates Yoga</li>
-                    <li data-filter=".filter-hatha">Hatha Yoga</li>
-                    <li data-filter=".filter-vinyasa">Vinyasa Yoga</li>
+                    {% for category in categories %}
+                    <li data-filter=".filter-{{ category.slug }}">{{ category.name }}</li>
+                    {% endfor %}
                 </ul>
             </div>
         </div>
         <div class="row class-container">
             {% for class in classes %}
-            <div class="col-lg-4 col-md-6 col-sm-12 class-item filter-{{ class.category }} wow fadeInUp"
+            <div class="col-lg-4 col-md-6 col-sm-12 class-item filter-{{ class.category.slug }} wow fadeInUp"
                 data-wow-delay="0.{{ forloop.counter }}s">
                 <div class="class-wrap">
                     <div class="class-img">
@@ -83,15 +83,20 @@
                         {% endif %}
                     </div>
                     <div class="class-text">
-                        {% if class.instructor %}
+                        {% if class.instructors.exists %}
                         <div class="class-teacher">
-                            {% if class.instructor.photo %}
-                            <img src="{{ class.instructor.photo.url }}" alt="{{ class.instructor.name }}">
+                            {% with main_instructor=class.instructors.first %}
+                            {% if main_instructor.photo %}
+                            <img src="{{ main_instructor.photo.url }}" alt="{{ main_instructor.name }}">
                             {% else %}
-                            <img src="{% static 'img/teacher-' %}{{ forloop.counter }}.png"
-                                alt="{{ class.instructor.name }}">
+                            <img src="{% static 'img/user.jpg' %}" alt="{{ main_instructor.name }}">
                             {% endif %}
-                            <h3>{{ class.instructor.name }}</h3>
+                            {% endwith %}
+                            <h3>
+                                {% for instructor in class.instructors.all %}
+                                {{ instructor.name }}{% if not forloop.last %}, {% endif %}
+                                {% endfor %}
+                            </h3>
                             <a href="{% url 'team' %}">+</a>
                         </div>
                         {% endif %}
