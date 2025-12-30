@@ -138,3 +138,21 @@ MEDIA_ROOT = BASE_DIR / 'media'
 # https://docs.djangoproject.com/en/4.2/ref/settings/#default-auto-field
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
+
+# ============================================
+# Django Axes - Protección contra fuerza bruta
+# ============================================
+INSTALLED_APPS += ['axes']
+
+MIDDLEWARE.insert(0, 'axes.middleware.AxesMiddleware')
+
+AUTHENTICATION_BACKENDS = [
+    'axes.backends.AxesStandaloneBackend',
+    'django.contrib.auth.backends.ModelBackend',
+]
+
+# Configuración de Axes
+AXES_FAILURE_LIMIT = 5  # Bloquear después de 5 intentos
+AXES_COOLOFF_TIME = 1   # Bloquear por 1 hora
+AXES_RESET_ON_SUCCESS = True  # Resetear al login exitoso
+AXES_LOCK_OUT_BY_COMBINATION_USER_AND_IP = True
