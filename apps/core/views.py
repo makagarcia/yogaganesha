@@ -1,5 +1,5 @@
 from django.shortcuts import render
-from apps.classes.models import YogaClass, ClassCategory
+from apps.classes.models import YogaClass, ClassCategory, Event
 from apps.instructors.models import Instructor
 from apps.blog.models import BlogPost, Testimonial, PricingPlan
 from apps.core.models import BusinessSettings, Gallery
@@ -9,7 +9,8 @@ def home(request):
     """Vista principal"""
     context = {
         'settings': BusinessSettings.load(),
-        'categories': ClassCategory.objects.all().order_by('order'),
+        'events': Event.objects.filter(is_active=True),
+        'categories': ClassCategory.objects.filter(classes__is_active=True).distinct().order_by('order'),
         'classes': YogaClass.objects.filter(is_active=True).order_by('order')[:6],
         'instructors': Instructor.objects.filter(is_active=True).order_by('order')[:4],
         'testimonials': Testimonial.objects.filter(is_active=True).order_by('order')[:4],
@@ -31,7 +32,7 @@ def classes_list(request):
     """Vista de clases"""
     context = {
         'settings': BusinessSettings.load(),
-        'categories': ClassCategory.objects.all().order_by('order'),
+        'categories': ClassCategory.objects.filter(classes__is_active=True).distinct().order_by('order'),
         'classes': YogaClass.objects.filter(is_active=True).order_by('order'),
     }
     return render(request, 'class.html', context)

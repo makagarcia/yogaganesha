@@ -5,7 +5,7 @@ from yogaganesha.settings import *
 import os
 
 # SECURITY
-DEBUG = os.getenv('DEBUG', 'False') == 'True'
+DEBUG = True
 SECRET_KEY = os.getenv('SECRET_KEY', 'django-insecure-CHANGE-THIS')
 ALLOWED_HOSTS = os.getenv('ALLOWED_HOSTS', 'localhost').split(',')
 

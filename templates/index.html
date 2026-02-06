@@ -3,8 +3,142 @@
 
 {% block title %}{{ settings.business_name }} - Inicio{% endblock %}
 
-{% block content %}
+{% block extra_css %}
+<!-- Swiper CSS -->
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.css" />
+<style>
+    .events-carousel-wrapper {
+        padding: 60px 0;
+        background: #fdfaf7;
+    }
 
+    .main-events-swiper {
+        width: 100%;
+        height: 500px;
+        border-radius: 15px;
+        overflow: hidden;
+        box-shadow: 0 15px 35px rgba(0, 0, 0, 0.1);
+    }
+
+    .swiper-slide {
+        background-position: center;
+        background-size: cover;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        text-align: center;
+        color: #fff;
+        position: relative;
+    }
+
+    .event-overlay {
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background: linear-gradient(to bottom, rgba(0, 0, 0, 0.2), rgba(0, 0, 0, 0.7));
+        z-index: 1;
+    }
+
+    .event-content {
+        position: relative;
+        z-index: 2;
+        max-width: 800px;
+        padding: 0 20px;
+    }
+
+    .event-date {
+        margin-bottom: 15px;
+    }
+
+    .event-date span {
+        background: #fbaf5d;
+        color: #fff;
+        padding: 5px 15px;
+        border-radius: 50px;
+        font-weight: 700;
+        font-size: 14px;
+        text-transform: uppercase;
+        letter-spacing: 1px;
+    }
+
+    .event-title {
+        font-size: 48px;
+        font-weight: 800;
+        margin-bottom: 15px;
+        color: #fff;
+        text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3);
+    }
+
+    .event-subtitle {
+        font-size: 18px;
+        margin-bottom: 25px;
+        opacity: 0.9;
+    }
+
+    .event-btn {
+        padding: 12px 30px;
+        font-size: 16px;
+        font-weight: 600;
+        letter-spacing: 1px;
+        color: #fff;
+        background: transparent;
+        border: 2px solid #fff;
+        border-radius: 50px;
+        transition: 0.3s;
+    }
+
+    .event-btn:hover {
+        background: #fff;
+        color: #fbaf5d;
+    }
+
+    .swiper-button-next,
+    .swiper-button-prev {
+        color: #fff;
+        background: rgba(255, 255, 255, 0.1);
+        width: 50px;
+        height: 50px;
+        border-radius: 50%;
+        backdrop-filter: blur(5px);
+    }
+
+    .swiper-button-next:after,
+    .swiper-button-prev:after {
+        font-size: 20px;
+        font-weight: bold;
+    }
+
+    .swiper-pagination-bullet {
+        background: #fff;
+        opacity: 0.5;
+        width: 12px;
+        height: 12px;
+    }
+
+    .swiper-pagination-bullet-active {
+        background: #fbaf5d;
+        opacity: 1;
+    }
+
+    @media (max-width: 768px) {
+        .main-events-swiper {
+            height: 400px;
+        }
+
+        .event-title {
+            font-size: 32px;
+        }
+
+        .event-subtitle {
+            font-size: 16px;
+        }
+    }
+</style>
+{% endblock %}
+
+{% block content %}
 <!-- Hero Start -->
 <div class="hero">
     <div class="container-fluid">
@@ -29,215 +163,251 @@
 </div>
 <!-- Hero End -->
 
-<!-- About Start -->
-<div class="about wow fadeInUp" data-wow-delay="0.1s">
-    <div class="container">
-        <div class="row align-items-center">
-            <div class="col-lg-5 col-md-6">
-                <div class="about-img">
-                    <img src="{% static 'img/about.png' %}" alt="Image">
+{% if events %}
+<!-- Events Carousel Start -->
+<div class="events-carousel-wrapper wow fadeInUp" data-wow-delay="0.1s">
+    <div class="section-header text-center mb-4">
+        <p>No te lo pierdas</p>
+        <h2>Próximos Eventos</h2>
+    </div>
+    <div class="swiper main-events-swiper">
+        <div class="swiper-wrapper">
+            {% for event in events %}
+            {% if event.image %}
+            <div class="swiper-slide" style="background-image: url('{{ event.image.url }}');">
+                {% else %}
+                <div class="swiper-slide">
+                    {% endif %}
+                    <div class="event-overlay"></div>
+                    <div class="event-content">
+                        <div class="event-date"><span>{{ event.date_text }}</span></div>
+                        <h2 class="event-title">{{ event.title }}</h2>
+                        {% if event.subtitle %}
+                        <p class="event-subtitle">{{ event.subtitle }}</p>
+                        {% endif %}
+                        <a href="{{ event.button_link }}" class="btn event-btn">{{ event.button_text }}</a>
+                    </div>
                 </div>
+                {% endfor %}
             </div>
-            <div class="col-lg-7 col-md-6">
-                <div class="section-header text-left">
-                    <p>Conócenos</p>
-                    <h2>{{ settings.about_title }}</h2>
+            <div class="swiper-pagination"></div>
+            <div class="swiper-button-prev"></div>
+            <div class="swiper-button-next"></div>
+        </div>
+    </div>
+    <!-- Events Carousel End -->
+    {% endif %}
+
+    <div class="about wow fadeInUp" data-wow-delay="0.1s">
+        <div class="container">
+            <div class="row align-items-center">
+                <div class="col-lg-5 col-md-6">
+                    <div class="about-img">
+                        <img src="{% static 'img/about.png' %}" alt="Image">
+                    </div>
                 </div>
-                <div class="about-text">
-                    <p>{{ settings.about_text }}</p>
-                    <a class="btn" href="{% url 'about' %}">Saber Más</a>
+                <div class="col-lg-7 col-md-6">
+                    <div class="section-header text-left">
+                        <p>Conócenos</p>
+                        <h2>{{ settings.about_title }}</h2>
+                    </div>
+                    <div class="about-text">
+                        <p>{{ settings.about_text }}</p>
+                        <a class="btn" href="{% url 'about' %}">Saber Más</a>
+                    </div>
                 </div>
             </div>
         </div>
     </div>
-</div>
-<!-- About End -->
 
-<!-- Class Start -->
-<div class="class">
-    <div class="container">
-        <div class="section-header text-center wow zoomIn" data-wow-delay="0.1s">
-            <p>Nuestras Clases</p>
-            <h2>Horario de Clases de Yoga</h2>
-        </div>
-        <div class="row">
-            <div class="col-12">
-                <ul id="class-filter">
-                    <li data-filter="*" class="filter-active">Todas las Clases</li>
-                    {% for category in categories %}
-                    <li data-filter=".filter-{{ category.slug }}">{{ category.name }}</li>
-                    {% endfor %}
-                </ul>
+    <div class="class">
+        <div class="container">
+            <div class="section-header text-center wow zoomIn" data-wow-delay="0.1s">
+                <p>Nuestras Clases</p>
+                <h2>Horario de Clases de Yoga</h2>
             </div>
-        </div>
-        <div class="row class-container">
-            {% for class in classes %}
-            <div class="col-lg-4 col-md-6 col-sm-12 class-item filter-{{ class.category.slug }} wow fadeInUp"
-                data-wow-delay="0.{{ forloop.counter }}s">
-                <div class="class-wrap">
-                    <div class="class-img">
-                        {% if class.image %}
-                        <img src="{{ class.image.url }}" alt="{{ class.name }}">
-                        {% else %}
-                        <img src="{% static 'img/class-' %}{{ forloop.counter }}.jpg" alt="{{ class.name }}">
-                        {% endif %}
-                    </div>
-                    <div class="class-text">
-                        {% if class.instructors.exists %}
-                        <div class="class-teacher">
-                            {% with main_instructor=class.instructors.first %}
-                            {% if main_instructor.photo %}
-                            <img src="{{ main_instructor.photo.url }}" alt="{{ main_instructor.name }}">
+            <div class="row">
+                <div class="col-12">
+                    <ul id="class-filter">
+                        <li data-filter="*" class="filter-active">Todas las Clases</li>
+                        {% for category in categories %}
+                        <li data-filter=".filter-{{ category.slug }}">{{ category.name }}</li>
+                        {% endfor %}
+                    </ul>
+                </div>
+            </div>
+            <div class="row class-container">
+                {% for class in classes %}
+                <div class="col-lg-4 col-md-6 col-sm-12 class-item filter-{{ class.category.slug }} wow fadeInUp"
+                    data-wow-delay="0.{{ forloop.counter }}s">
+                    <div class="class-wrap">
+                        <div class="class-img">
+                            {% if class.image %}
+                            <img src="{{ class.image.url }}" alt="{{ class.name }}">
                             {% else %}
-                            <img src="{% static 'img/user.jpg' %}" alt="{{ main_instructor.name }}">
+                            <img src="{% static 'img/class-' %}{{ forloop.counter }}.jpg" alt="{{ class.name }}">
                             {% endif %}
-                            {% endwith %}
-                            <h3>
-                                {% for instructor in class.instructors.all %}
-                                {{ instructor.name }}{% if not forloop.last %}, {% endif %}
-                                {% endfor %}
-                            </h3>
-                            <a href="{% url 'team' %}">+</a>
                         </div>
-                        {% endif %}
-                        <h2>{{ class.name }}</h2>
-                        <div class="class-meta">
-                            <p><i class="far fa-calendar-alt"></i>{{ class.schedule_days }}</p>
-                            <p><i class="far fa-clock"></i>{{ class.schedule_time }}</p>
+                        <div class="class-text">
+                            {% if class.instructors.exists %}
+                            <div class="class-teacher">
+                                {% with main_instructor=class.instructors.first %}
+                                {% if main_instructor.photo %}
+                                <img src="{{ main_instructor.photo.url }}" alt="{{ main_instructor.name }}">
+                                {% else %}
+                                <img src="{% static 'img/user.jpg' %}" alt="{{ main_instructor.name }}">
+                                {% endif %}
+                                {% endwith %}
+                                <h3>
+                                    {% for instructor in class.instructors.all %}
+                                    {{ instructor.name }}{% if not forloop.last %}, {% endif %}
+                                    {% endfor %}
+                                </h3>
+                                <a href="{% url 'team' %}">+</a>
+                            </div>
+                            {% endif %}
+                            <h2>{{ class.name }}</h2>
+                            <div class="class-meta">
+                                <p><i class="far fa-calendar-alt"></i>{{ class.schedule_days }}</p>
+                                <p><i class="far fa-clock"></i>{{ class.schedule_time }}</p>
+                            </div>
                         </div>
                     </div>
                 </div>
+                {% endfor %}
             </div>
-            {% empty %}
-            <div class="col-12 text-center">
-                <p>No hay clases disponibles en este momento.</p>
-            </div>
-            {% endfor %}
         </div>
     </div>
-</div>
-<!-- Class End -->
 
-
-
-<!-- Testimonial Start -->
-<div class="testimonial wow fadeInUp" data-wow-delay="0.1s">
-    <div class="container">
-        <div class="section-header text-center">
-            <p>Testimonios</p>
-            <h2>¡Lo que dicen nuestros clientes!</h2>
-        </div>
-        <div class="owl-carousel testimonials-carousel">
-            {% for testimonial in testimonials %}
-            <div class="testimonial-item">
-                <div class="testimonial-img">
-                    {% if testimonial.photo %}
-                    <img src="{{ testimonial.photo.url }}" alt="{{ testimonial.client_name }}">
-                    {% else %}
-                    <img src="{% static 'img/testimonial-' %}{{ forloop.counter }}.jpg"
-                        alt="{{ testimonial.client_name }}">
-                    {% endif %}
-                </div>
-                <div class="testimonial-text">
-                    <p>{{ testimonial.testimonial_text }}</p>
-                    <h3>{{ testimonial.client_name }}</h3>
-                    <h4>{{ testimonial.profession }}</h4>
-                </div>
+    <div class="testimonial wow fadeInUp" data-wow-delay="0.1s">
+        <div class="container">
+            <div class="section-header text-center">
+                <p>Testimonios</p>
+                <h2>¡Lo que dicen nuestros clientes!</h2>
             </div>
-            {% empty %}
-            <div class="testimonial-item">
-                <div class="testimonial-text">
-                    <p>Próximamente testimonios de nuestros clientes.</p>
-                </div>
-            </div>
-            {% endfor %}
-        </div>
-    </div>
-</div>
-<!-- Testimonial End -->
-
-<!-- Team Start -->
-<div class="team">
-    <div class="container">
-        <div class="section-header text-center wow zoomIn" data-wow-delay="0.1s">
-            <p>Instructores de Yoga</p>
-            <h2>Instructores Expertos</h2>
-        </div>
-        <div class="row">
-            {% for instructor in instructors %}
-            <div class="col-lg-3 col-md-6 wow fadeInUp" data-wow-delay="0.{{ forloop.counter }}s">
-                <div class="team-item">
-                    <div class="team-img">
-                        {% if instructor.photo %}
-                        <img src="{{ instructor.photo.url }}" alt="{{ instructor.name }}">
+            <div class="owl-carousel testimonials-carousel">
+                {% for testimonial in testimonials %}
+                <div class="testimonial-item">
+                    <div class="testimonial-img">
+                        {% if testimonial.photo %}
+                        <img src="{{ testimonial.photo.url }}" alt="{{ testimonial.client_name }}">
                         {% else %}
-                        <img src="{% static 'img/team-' %}{{ forloop.counter }}.jpg" alt="{{ instructor.name }}">
+                        <img src="{% static 'img/testimonial-' %}{{ forloop.counter }}.jpg"
+                            alt="{{ testimonial.client_name }}">
                         {% endif %}
-                        <div class="team-social">
-                            {% if instructor.twitter %}<a href="{{ instructor.twitter }}" target="_blank"><i
-                                    class="fab fa-twitter"></i></a>{% endif %}
-                            {% if instructor.facebook %}<a href="{{ instructor.facebook }}" target="_blank"><i
-                                    class="fab fa-facebook-f"></i></a>{% endif %}
-                            {% if instructor.linkedin %}<a href="{{ instructor.linkedin }}" target="_blank"><i
-                                    class="fab fa-linkedin-in"></i></a>{% endif %}
-                            {% if instructor.instagram %}<a href="{{ instructor.instagram }}" target="_blank"><i
-                                    class="fab fa-instagram"></i></a>{% endif %}
+                    </div>
+                    <div class="testimonial-text">
+                        <p>{{ testimonial.testimonial_text }}</p>
+                        <h3>{{ testimonial.client_name }}</h3>
+                        <h4>{{ testimonial.profession }}</h4>
+                    </div>
+                </div>
+                {% endfor %}
+            </div>
+        </div>
+    </div>
+
+    <div class="team">
+        <div class="container">
+            <div class="section-header text-center wow zoomIn" data-wow-delay="0.1s">
+                <p>Instructores de Yoga</p>
+                <h2>Instructores Expertos</h2>
+            </div>
+            <div class="row">
+                {% for instructor in instructors %}
+                <div class="col-lg-3 col-md-6 wow fadeInUp" data-wow-delay="0.{{ forloop.counter }}s">
+                    <div class="team-item">
+                        <div class="team-img">
+                            {% if instructor.photo %}
+                            <img src="{{ instructor.photo.url }}" alt="{{ instructor.name }}">
+                            {% else %}
+                            <img src="{% static 'img/team-' %}{{ forloop.counter }}.jpg" alt="{{ instructor.name }}">
+                            {% endif %}
+                            <div class="team-social">
+                                {% if instructor.twitter %}<a href="{{ instructor.twitter }}" target="_blank"><i
+                                        class="fab fa-twitter"></i></a>{% endif %}
+                                {% if instructor.facebook %}<a href="{{ instructor.facebook }}" target="_blank"><i
+                                        class="fab fa-facebook-f"></i></a>{% endif %}
+                                {% if instructor.linkedin %}<a href="{{ instructor.linkedin }}" target="_blank"><i
+                                        class="fab fa-linkedin-in"></i></a>{% endif %}
+                                {% if instructor.instagram %}<a href="{{ instructor.instagram }}" target="_blank"><i
+                                        class="fab fa-instagram"></i></a>{% endif %}
+                            </div>
+                        </div>
+                        <div class="team-text">
+                            <h2>{{ instructor.name }}</h2>
+                            <p>{{ instructor.specialization|default:"Instructor de Yoga" }}</p>
                         </div>
                     </div>
-                    <div class="team-text">
-                        <h2>{{ instructor.name }}</h2>
-                        <p>{{ instructor.specialization|default:"Instructor de Yoga" }}</p>
-                    </div>
                 </div>
+                {% endfor %}
             </div>
-            {% empty %}
-            <div class="col-12 text-center">
-                <p>Próximamente nuestro equipo de instructores.</p>
-            </div>
-            {% endfor %}
         </div>
     </div>
-</div>
-<!-- Team End -->
 
-<!-- Blog Start -->
-<div class="blog">
-    <div class="container">
-        <div class="section-header text-center wow zoomIn" data-wow-delay="0.1s">
-            <p>Desde el Blog</p>
-            <h2>Últimos Artículos de Yoga</h2>
-        </div>
-        <div class="owl-carousel blog-carousel wow fadeInUp" data-wow-delay="0.1s">
-            {% for post in blog_posts %}
-            <div class="blog-item">
-                <div class="blog-img">
-                    {% if post.featured_image %}
-                    <img src="{{ post.featured_image.url }}" alt="{{ post.title }}">
-                    {% else %}
-                    <img src="{% static 'img/blog-' %}{{ forloop.counter }}.jpg" alt="{{ post.title }}">
-                    {% endif %}
-                </div>
-                <div class="blog-text">
-                    <h2>{{ post.title }}</h2>
-                    <div class="blog-meta">
-                        <p><i class="far fa-list-alt"></i>{{ post.category }}</p>
-                        <p><i class="far fa-calendar-alt"></i>{{ post.published_date|date:"d M Y" }}</p>
+    <div class="blog">
+        <div class="container">
+            <div class="section-header text-center wow zoomIn" data-wow-delay="0.1s">
+                <p>Desde el Blog</p>
+                <h2>Últimos Artículos de Yoga</h2>
+            </div>
+            <div class="owl-carousel blog-carousel wow fadeInUp" data-wow-delay="0.1s">
+                {% for post in blog_posts %}
+                <div class="blog-item">
+                    <div class="blog-img">
+                        {% if post.featured_image %}
+                        <img src="{{ post.featured_image.url }}" alt="{{ post.title }}">
+                        {% else %}
+                        <img src="{% static 'img/blog-' %}{{ forloop.counter }}.jpg" alt="{{ post.title }}">
+                        {% endif %}
                     </div>
-                    <p>{{ post.excerpt }}</p>
-                    <a class="btn" href="{% url 'blog_detail' post.slug %}">Leer Más <i
-                            class="fa fa-angle-right"></i></a>
+                    <div class="blog-text">
+                        <h2>{{ post.title }}</h2>
+                        <div class="blog-meta">
+                            <p><i class="far fa-list-alt"></i>{{ post.category }}</p>
+                            <p><i class="far fa-calendar-alt"></i>{{ post.published_date|date:"d M Y" }}</p>
+                        </div>
+                        <p>{{ post.excerpt }}</p>
+                        <a class="btn" href="{% url 'blog_detail' post.slug %}">Leer Más <i
+                                class="fa fa-angle-right"></i></a>
+                    </div>
                 </div>
+                {% endfor %}
             </div>
-            {% empty %}
-            <div class="blog-item">
-                <div class="blog-text">
-                    <p>Próximamente nuevos artículos sobre yoga y bienestar.</p>
-                </div>
-            </div>
-            {% endfor %}
         </div>
     </div>
-</div>
-<!-- Blog End -->
+    {% endblock %}
 
-{% endblock %}
+    {% block extra_js %}
+    <!-- Swiper JS -->
+    <script src="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.js"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            if (document.querySelector('.main-events-swiper')) {
+                const swiper = new Swiper('.main-events-swiper', {
+                    loop: true,
+                    speed: 1000,
+                    autoplay: {
+                        delay: 5000,
+                        disableOnInteraction: false,
+                    },
+                    pagination: {
+                        el: '.swiper-pagination',
+                        clickable: true,
+                    },
+                    navigation: {
+                        nextEl: '.swiper-button-next',
+                        prevEl: '.swiper-button-prev',
+                    },
+                    effect: 'fade',
+                    fadeEffect: {
+                        crossFade: true
+                    },
+                    mousewheel: false,
+                    allowTouchMove: true,
+                    simulateTouch: true,
+                });
+            }
+        });
+    </script>
+    {% endblock %}

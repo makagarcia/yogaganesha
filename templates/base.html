@@ -25,7 +25,7 @@
     <link href="{% static 'lib/lightbox/css/lightbox.min.css' %}" rel="stylesheet">
 
     <!-- Template Stylesheet -->
-    <link href="{% static 'css/style.css' %}" rel="stylesheet">
+    <link href="{% static 'css/style.css' %}?v=2026020603" rel="stylesheet">
 
     {% block extra_css %}{% endblock %}
 </head>
@@ -46,6 +46,14 @@
                             <i class="fa fa-phone-alt"></i>
                             <h2>{{ settings.phone }}</h2>
                             <p>Para Citas</p>
+                        </div>
+                        <div class="text">
+                            <a href="#" data-toggle="modal" data-target="#horariosModal"
+                                style="color: inherit; text-decoration: none;">
+                                <i class="far fa-clock"></i>
+                                <h2>Horarios</h2>
+                                <p>Ver Calendario</p>
+                            </a>
                         </div>
                     </div>
                 </div>
@@ -148,6 +156,29 @@
         </div>
     </div>
     <!-- Footer End -->
+
+    <!-- Horarios Modal -->
+    <div class="modal fade" id="horariosModal" tabindex="-1" role="dialog" aria-labelledby="horariosModalLabel"
+        aria-hidden="true">
+        <div class="modal-dialog modal-lg modal-dialog-centered" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="horariosModalLabel">Horario de Actividades</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body text-center">
+                    <img src="{% static 'img/horarios.jpg' %}" alt="Horario de Actividades" class="img-fluid"
+                        style="max-width: 100%; height: auto;">
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Cerrar</button>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- Horarios Modal End -->
 
     <a href="#" class="back-to-top"><i class="fa fa-chevron-up"></i></a>
 
