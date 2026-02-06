@@ -126,7 +126,7 @@ a:focus {
 
 .top-bar .social {
     display: flex;
-    height: 60px;
+    height: 45px;
     font-size: 0;
     justify-content: flex-end;
 }
@@ -249,6 +249,31 @@ a:focus {
     .navbar {
         padding: 15px;
         background: #343148 !important;
+        text-align: center;
+    }
+
+    .navbar .container-fluid {
+        position: relative;
+    }
+
+    .navbar .navbar-brand {
+        display: inline-block;
+        float: none;
+        margin-right: 50px;
+    }
+
+    .navbar .navbar-toggler {
+        position: absolute;
+        right: 15px;
+        top: 50%;
+        transform: translateY(-50%);
+        border: 2px solid rgba(255, 255, 255, 0.5);
+        padding: 8px 10px;
+    }
+
+    .navbar .navbar-toggler-icon {
+        width: 24px;
+        height: 20px;
     }
 
     .navbar .navbar-brand span {
@@ -1962,6 +1987,29 @@ a:focus {
     border: none;
 }
 
+@media (max-width: 767.98px) {
+    .footer .footer-info h3 {
+        font-size: 16px;
+        margin-bottom: 15px;
+    }
+
+    .footer .footer-menu {
+        flex-direction: column;
+        gap: 10px;
+    }
+
+    .footer .footer-menu p {
+        border: none;
+        padding: 0;
+        font-size: 16px;
+        line-height: 24px;
+    }
+
+    .footer .footer-social {
+        margin-top: 15px;
+    }
+}
+
 .footer .footer-social {
     position: relative;
     margin-top: 5px;
@@ -2021,5 +2069,30 @@ a:focus {
     .footer .copyright .col-md-6:last-child p {
         margin: 5px 0;
         text-align: center;
+    }
+}
+
+/* Prevent page shift when modal opens */
+body.modal-open {
+    overflow: hidden;
+    padding-right: 0 !important;
+}
+
+.modal {
+    overflow-y: auto;
+}
+
+.modal-body img {
+    max-width: 100%;
+    height: auto;
+}
+
+@media (max-width: 767.98px) {
+    .modal-dialog {
+        margin: 10px;
+    }
+
+    .modal-body {
+        padding: 15px;
     }
 }

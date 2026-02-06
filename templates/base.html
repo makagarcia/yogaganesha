@@ -104,6 +104,7 @@
                         class="nav-item nav-link {% if request.resolver_match.url_name == 'gallery' %}active{% endif %}">Galería</a>
                     <a href="{% url 'blog' %}"
                         class="nav-item nav-link {% if request.resolver_match.url_name == 'blog' or request.resolver_match.url_name == 'blog_detail' %}active{% endif %}">Blog</a>
+                    <a href="#" data-toggle="modal" data-target="#horariosModal" class="nav-item nav-link">Horarios</a>
                     <a href="{% url 'contact' %}"
                         class="nav-item nav-link {% if request.resolver_match.url_name == 'contact' %}active{% endif %}">Contacto</a>
                 </div>
