@@ -45,3 +45,4 @@ secret.key
 
 # Docker
 certbot/
+backups/
